@@ -1,0 +1,7 @@
+room-1234: {
+  description = "Home Monitor Room"
+  is_private = false
+  bitrate = 0
+  bitrate_cap = 0
+  publishers = 4
+}

@@ -1,0 +1,13 @@
+general: {
+  enabled = true
+  secure = true
+  wss = true
+  port = 8188
+  interface = "0.0.0.0"
+}
+
+certificates: {
+  cert_pem = "/certs/cert.pem"
+  cert_key = "/certs/key.pem"
+}
+

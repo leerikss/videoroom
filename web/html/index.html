@@ -1,0 +1,32 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Video Room</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.3/adapter.min.js" ></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
+	<script type="text/javascript" src="janus.js" ></script>
+	<script type="text/javascript" src="video-cover.js"></script>	
+	<script type="text/javascript" src="layout.js"></script>	
+	<script type="text/javascript" src="videoroom.js"></script>
+	<link rel="stylesheet" href="style.css" type="text/css"/>
+  </head>
+
+  <body>
+    <div id="grid"></div>
+
+    <script>
+      $(document).ready(()=>{
+	  const protocol = window.location.protocol;
+          const hostname = window.location.hostname;
+          const wsp = (protocol === "https:") ? "wss:" : "ws:";
+	  VideoRoom.init({
+	      publisher: confirm("Publish from this device?"),
+	      janusUrl: wsp + "//" + hostname + "/janus-wss",
+	      gridId: 'grid'
+	  });
+      });
+    </script>
+    
+  </body>
+</html>

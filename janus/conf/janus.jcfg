@@ -1,0 +1,18 @@
+general: {
+  configs_folder = "/opt/janus/etc/janus"
+  log_level = 4
+  log_timestamps = true
+  log_to_stdout = true
+}
+
+http: {
+  enabled = false
+}
+
+nat: {
+  stun_server = "stun.l.google.com"
+  stun_port = 19302
+  media: {
+    port_range = "10000-10200"
+  }
+}
