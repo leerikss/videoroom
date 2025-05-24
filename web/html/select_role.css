@@ -1,0 +1,119 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+}
+
+#select-role {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#select-role .pane {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#select-role .pane::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.1) 8px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.4;
+    z-index: 0;
+}
+
+/* Pattern background with gradient overlay */
+#select-role .publish {
+    background: linear-gradient(135deg, #f97316, #facc15);
+}
+
+#select-role .subscribe {
+    background: linear-gradient(135deg, #22d3ee, #38bdf8);
+}
+
+#select-role .glass-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: min(2vw, 2vh) min(5vw, 5vh);
+    color: #fff;
+    font-size: min(5vw, 5vh);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow:
+	0 4px 12px rgba(0, 0, 0, 0.4); /* Black drop shadow */
+    z-index: 1;
+}
+
+#select-role .glass-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+#select-role .glass-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 40px rgba(255, 255, 255, 0.3);
+}
+
+#select-role .divider {
+    background: white;
+    height: 4px;
+    z-index: 1;
+}
+
+@media (orientation: landscape) {
+    #select-role .divider {
+	width: 2px;
+	height: 100%;
+    }
+    #select-role .publish {
+	/* existing styles */
+	box-shadow: inset -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+    }
+    #select-role .subscribe {
+	/* existing styles */
+	box-shadow: inset 10px 0 20px -10px rgba(0, 0, 0, 0.3);
+    }
+}
+
+@media (orientation: portrait) {
+    #select-role {
+        flex-direction: column;
+    }
+    #select-role .divider {
+	height: 2px;
+	width: 100%;
+    }	
+    #select-role .publish {
+	box-shadow: inset 0 -10px 20px -10px rgba(0, 0, 0, 0.3);
+    }
+    #select-role .subscribe {
+	box-shadow: inset 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+    }
+}

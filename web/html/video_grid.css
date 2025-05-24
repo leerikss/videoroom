@@ -6,25 +6,26 @@ html, body {
     background: black;
     overflow: hidden; 
 }
-#grid {
+
+#video-grid {
     display: grid;
     width: 100vw;
     height: 100vh;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;    
 }
-.video-cell {
+#video-grid .video-cell {
     touch-action: none; /* prevent default gestures */
     position: relative;
     overflow: hidden;
 }
-.video-wrapper {
+#video-grid .video-wrapper {
     touch-action: none;
     width: 100%;
     height: 100%;
     position: relative;
 }
-video {
+#video-grid video {
     position: absolute;
     top: 0;
     left: 0;

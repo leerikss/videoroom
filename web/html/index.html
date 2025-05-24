@@ -9,23 +9,39 @@
 	<script type="text/javascript" src="video-cover.js"></script>	
 	<script type="text/javascript" src="layout.js"></script>	
 	<script type="text/javascript" src="videoroom.js"></script>
-	<link rel="stylesheet" href="style.css" type="text/css"/>
+	<link rel="stylesheet" href="video_grid.css" type="text/css"/>
+	<link rel="stylesheet" href="select_role.css" type="text/css"/>	
   </head>
 
   <body>
-    <div id="grid"></div>
+    <div id="video-grid" style="display:none"></div>
+    
+    <div id="select-role">
+      <div class="pane publish">
+	<button class="glass-button" onclick="javascript:start(true);">Publish</button>
+      </div>
+      <div class="divider"></div>
+      <div class="pane subscribe">
+	<button class="glass-button" onclick="javascript:start(false);">Subscribe</button>
+      </div>
+    </div>
 
+    
     <script>
-      $(document).ready(()=>{
+      function start(publisher) {
+	  
+	  $("#select-role").hide();
+	  $("#video-grid").show();
+	  
 	  const protocol = window.location.protocol;
           const hostname = window.location.hostname;
           const wsp = (protocol === "https:") ? "wss:" : "ws:";
 	  VideoRoom.init({
-	      publisher: confirm("Publish from this device?"),
+	      publisher: publisher,
 	      janusUrl: wsp + "//" + hostname + "/janus-wss",
-	      gridId: 'grid'
+	      gridId: 'video-grid'
 	  });
-      });
+      };
     </script>
     
   </body>
