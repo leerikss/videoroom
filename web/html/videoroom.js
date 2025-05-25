@@ -26,6 +26,16 @@ const VideoRoom = function() {
         });
     }
 
+    function stop() {
+	if(plugin) {
+	    plugin.detach();
+	    plugin = null;
+	}
+	if(janus) {
+	    janus.destroy();
+	}
+    }
+    
     function attachToRoom() {
 	janus.attach({
 	    plugin: "janus.plugin.videoroom",
@@ -186,6 +196,7 @@ const VideoRoom = function() {
 
 	VideoCover.apply(wrap,video);
 	Layout.add(cell);
+	uiAddVideoCtrl(id);
     }
 
     function uiAddAudio(id, stream) {
@@ -222,10 +233,35 @@ const VideoRoom = function() {
 
     function uiRemove(id) {
 	console.log("Removing "+id+"...");
+	uiDelVideoCtrl(id);
 	Layout.remove($('#cont_'+id).get(0));
     }
+
+    function uiAddVideoCtrl(id) {
+	$("#control-box")
+	    .append('<button class="control-button" id="videoCtrl_'+id+'" title="Hide Video">'+
+		    '<i class="fas fa-video-slash"></i></button>');
+	$("#videoCtrl_"+id).click(el => {
+	    if(el.target.className === "fas fa-video-slash") {
+		el.target.className = "fas fa-video";
+		$('#cont_'+id).hide(); // TODO: Unsubscribe from local/remote stream
+	    } else if(el.target.className === "fas fa-video") {
+		el.target.className = "fas fa-video-slash";
+		$('#cont_'+id).show(); // TODO: Subscribe to local/remote stream
+	    }
+	});
+	$("#control-box").show();
+    }
     
+    function uiDelVideoCtrl(id) {
+	$("#videoCtrl_"+id).remove();
+	if($("#control-box").children().length == 0) {
+	    $("#control-box").hide();
+	}
+    }
+
     return {
-	init: init
+	init: init,
+	stop: stop
     }
 }();

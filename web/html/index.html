@@ -3,17 +3,26 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Video Room</title>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.3/adapter.min.js" ></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
-	<script type="text/javascript" src="janus.js" ></script>
-	<script type="text/javascript" src="video-cover.js"></script>	
-	<script type="text/javascript" src="layout.js"></script>	
-	<script type="text/javascript" src="videoroom.js"></script>
-	<link rel="stylesheet" href="video_grid.css" type="text/css"/>
-	<link rel="stylesheet" href="select_role.css" type="text/css"/>	
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.3/adapter.min.js" ></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
+    <script type="text/javascript" src="janus.js" ></script>
+    <script type="text/javascript" src="video_cover.js"></script>	
+    <script type="text/javascript" src="layout.js"></script>	
+    <script type="text/javascript" src="videoroom.js"></script>
+    <link rel="stylesheet" href="video_grid.css" type="text/css"/>
+    <link rel="stylesheet" href="select_role.css" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="control_box.css" type="text/css"/>		
   </head>
 
   <body>
+
+    <div id="back-button" title="Go Back">
+      <i class="fas fa-arrow-left"></i>
+    </div>
+
+    <div id="control-box"></div>
+    
     <div id="video-grid" style="display:none"></div>
     
     <div id="select-role">
@@ -25,14 +34,10 @@
 	<button class="glass-button" onclick="javascript:start(false);">Subscribe</button>
       </div>
     </div>
-
     
     <script>
-      function start(publisher) {
-	  
-	  $("#select-role").hide();
-	  $("#video-grid").show();
-	  
+      async function start(publisher) {
+	  showVideos()
 	  const protocol = window.location.protocol;
           const hostname = window.location.hostname;
           const wsp = (protocol === "https:") ? "wss:" : "ws:";
@@ -41,7 +46,36 @@
 	      janusUrl: wsp + "//" + hostname + "/janus-wss",
 	      gridId: 'video-grid'
 	  });
+	  // Prevent sleep
+	  wakeLock = await navigator.wakeLock.request('screen');
       };
+      
+      function showVideos() {
+	  $("#back-button").show();	
+	  $("#select-role").hide();
+	  $("#video-grid").show();
+      }
+      
+      function showSelection() {
+	  $("#control-box").hide();
+	  $("#back-button").hide();	
+	  $("#select-role").show();
+	  $("#video-grid").hide();
+      }
+
+      $( document ).ready(() => {
+	  $("#back-button").click(() => {
+	      VideoRoom.stop();
+	      $("#video-grid").empty();
+	      $("#control-box").empty();
+	      $("#control-box").hide();
+	      $("#back-button").hide();	
+	      showSelection();
+	  });
+      });
+      $("#control-box").hide();
+      $("#back-button").hide();	
+      
     </script>
     
   </body>

@@ -1,0 +1,47 @@
+#control-box, #back-button {
+    color: white;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    border: 2px solid white;
+}
+
+#control-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px;
+    padding: 10px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+
+#back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#control-box .control-button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+    padding: 8px;
+}
+
+#control-box .control-button:hover {
+    opacity: 0.8;
+}
