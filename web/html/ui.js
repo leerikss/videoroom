@@ -86,6 +86,7 @@ const UI = (function() {
     return {
 	addVideo: addVideo,
 	addAudio: addAudio,
+	remove: remove,
 	addVideoCtrl: addVideoCtrl,
 	removeVideoCtrl: removeVideoCtrl
     }
