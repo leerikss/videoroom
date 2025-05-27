@@ -60,7 +60,7 @@ html, body {
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow:
-	0 4px 12px rgba(0, 0, 0, 0.4); /* Black drop shadow */
+	      0 4px 12px rgba(0, 0, 0, 0.4); /* Black drop shadow */
     z-index: 1;
 }
 
@@ -89,16 +89,16 @@ html, body {
 
 @media (orientation: landscape) {
     #select-role .divider {
-	width: 2px;
-	height: 100%;
+	      width: 2px;
+	      height: 100%;
     }
     #select-role .publish {
-	/* existing styles */
-	box-shadow: inset -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+	      /* existing styles */
+	      box-shadow: inset -10px 0 20px -10px rgba(0, 0, 0, 0.3);
     }
     #select-role .subscribe {
-	/* existing styles */
-	box-shadow: inset 10px 0 20px -10px rgba(0, 0, 0, 0.3);
+	      /* existing styles */
+	      box-shadow: inset 10px 0 20px -10px rgba(0, 0, 0, 0.3);
     }
 }
 
@@ -107,13 +107,13 @@ html, body {
         flex-direction: column;
     }
     #select-role .divider {
-	height: 2px;
-	width: 100%;
+	      height: 2px;
+	      width: 100%;
     }	
     #select-role .publish {
-	box-shadow: inset 0 -10px 20px -10px rgba(0, 0, 0, 0.3);
+	      box-shadow: inset 0 -10px 20px -10px rgba(0, 0, 0, 0.3);
     }
     #select-role .subscribe {
-	box-shadow: inset 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+	      box-shadow: inset 0 10px 20px -10px rgba(0, 0, 0, 0.3);
     }
 }

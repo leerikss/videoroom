@@ -33,55 +33,55 @@
     
     <div id="select-role">
       <div class="pane publish">
-	<button class="glass-button" onclick="javascript:start(true);">Publish</button>
+	      <button class="glass-button" onclick="javascript:start(true);">Publish</button>
       </div>
       <div class="divider"></div>
       <div class="pane subscribe">
-	<button class="glass-button" onclick="javascript:start(false);">Subscribe</button>
+	      <button class="glass-button" onclick="javascript:start(false);">Subscribe</button>
       </div>
     </div>
     
     <script>
       async function start(publisher) {
-	  showVideos()
-	  // Init Janus
-	  const protocol = window.location.protocol;
+	        showVideos()
+	        // Init Janus
+	        const protocol = window.location.protocol;
           const hostname = window.location.hostname;
           const wsp = (protocol === "https:") ? "wss:" : "ws:";
-	  VideoRoom.init({
-	      publisher: publisher,
-	      janusUrl: wsp + "//" + hostname + "/janus-wss"
-	  });
-	  // Full screen
-	  const el = document.documentElement;
-	  el.requestFullscreen();
-	  // Prevent sleep
-	  wakeLock = await navigator.wakeLock.request('screen');
+	        VideoRoom.init({
+	            publisher: publisher,
+	            janusUrl: wsp + "//" + hostname + "/janus-wss"
+	        });
+	        // Full screen
+	        const el = document.documentElement;
+	        el.requestFullscreen();
+	        // Prevent sleep
+	        wakeLock = await navigator.wakeLock.request('screen');
       };
       
       function showVideos() {
-	  $("#select-role").hide();
-	  $("#video-grid").show();
-	  $("#back-button").show();	
+	        $("#select-role").hide();
+	        $("#video-grid").show();
+	        $("#back-button").show();	
       }
       
       function showSelection() {
-	  $("#control-box").empty();
-	  $("#control-box").hide();
-	  $("#video-grid").empty();
-	  $("#video-grid").hide();
-	  $("#back-button").hide();	
-	  $("#select-role").show();
+	        $("#control-box").empty();
+	        $("#control-box").hide();
+	        $("#video-grid").empty();
+	        $("#video-grid").hide();
+	        $("#back-button").hide();	
+	        $("#select-role").show();
       }
 
       $( document ).ready(() => {
-	  // Init layout
-	  Layout.init("video-grid");
-	  // Back button
-	  $("#back-button").click(() => {
-	      VideoRoom.stop();
-	      showSelection();
-	  });
+	        // Init layout
+	        Layout.init("video-grid");
+	        // Back button
+	        $("#back-button").click(() => {
+	            VideoRoom.stop();
+	            showSelection();
+	        });
       });
       
       // Default view
