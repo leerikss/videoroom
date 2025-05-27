@@ -38,6 +38,8 @@ const Layout = function() {
 	
 	// Update
 	const layout = layouts[Math.min(count, 4)];
+	if(!layout) return;
+	
 	grid.style.gridTemplateColumns = layout.columns;
 	grid.style.gridTemplateRows = layout.rows;
     }
@@ -49,6 +51,7 @@ const Layout = function() {
     }
 
     function remove(el) {
+	if(!el) return;
         el.remove();
 	update();
     }

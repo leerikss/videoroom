@@ -1,6 +1,7 @@
 const VideoRoom = function() {
 
-    let janus,conf,plugin = null;
+    let janus,conf,plugin;
+    let tracks = {};
     let opaqueId = "videoroom"; // "room-"+Janus.randomString(12);
     let room = 1234;
     
@@ -9,6 +10,7 @@ const VideoRoom = function() {
 	
 	Layout.init(conf.gridId);
 	
+	tracks = {};
         Janus.init({
             debug: false, // "all" | true,
 	    callback: () => {
@@ -16,10 +18,8 @@ const VideoRoom = function() {
 		    server: conf.janusUrl,
 		    success: attachToRoom,
 		    error: (error) => {
-			console.error("Janus init error", error);
-		    },
-		    destroyed: () => {
-			console.log("Janus destroyed");
+			console.error("Janus error", error);
+			stop();
 		    }
 		})
 	    }
@@ -27,6 +27,7 @@ const VideoRoom = function() {
     }
 
     function stop() {
+	delete tracks;
 	if(plugin) {
 	    plugin.detach();
 	    plugin = null;
@@ -59,6 +60,16 @@ const VideoRoom = function() {
 			subscribe(msg.publishers);
 		    }
 		}
+		// Handle removed streams
+		const unpublished = msg["unpublished"];
+		const leaving = msg["leaving"];
+		if (unpublished || leaving) {		    
+		    const feedId = unpublished || leaving;
+		    console.log("Stream "+feedId+" ended, removing");
+		    delete tracks[feedId];
+		    uiRemove(feedId, true);
+		}
+		// Handle jsep
 		if (jsep) {
 		    plugin.handleRemoteJsep({ jsep });
 		}
@@ -67,7 +78,8 @@ const VideoRoom = function() {
 	    onlocaltrack: (track, added) => {
 		if (added && track.kind === "video") {
 		    const stream = new MediaStream([track]);
-		    uiAddVideo("local",stream);
+		    uiAddVideo(0,stream,true);
+		    plugin.localStream = stream;    
 		}
 	    },
 	    
@@ -103,7 +115,7 @@ const VideoRoom = function() {
 		plugin.send({ message: message, jsep: jsep });		
 	    },
 	    error: (error) => {
-		console.error("WebRTC error:", error);
+		console.debug("Audio device not found, trying without...", error);
 		if(useAudio)
 		    publish(false); // No audio input error
 	    }
@@ -122,13 +134,12 @@ const VideoRoom = function() {
     
     function subscribe(publishers) {
 	publishers.forEach(publisher => {
-            let remoteFeed = null;
+	    let remoteFeed = null;
             janus.attach({
 		plugin: "janus.plugin.videoroom",
 		opaqueId: opaqueId,
 		success: (pluginHandleRemote) => {
                     remoteFeed = pluginHandleRemote;
-		    remoteFeed.remoteTracks = {};		
 		    remoteFeed.rfid = publisher.id; // Group ID for tracks later
                     const message = {
 			request: "join",
@@ -138,39 +149,38 @@ const VideoRoom = function() {
                     };
                     remoteFeed.send({ message: message });
 		},
-		onmessage: (msg, jsep) => {
-                    const event = msg["videoroom"];
+		onmessage: async(msg, jsep) => {
                     if (jsep) {
 			remoteFeed.createAnswer({
-                            jsep,
-                            tracks: [], // {type: "data"}],
-                            success: function(jsepAnswer) {
+			    jsep,
+			    tracks: [{type: 'data'}],
+			    success: function(jsepAnswer) {
 				const body = { request: "start", room: room };
 				remoteFeed.send({ message: body, jsep: jsepAnswer });
-                            },
-                            error: function(err) {
+			    },
+			    error: function(err) {
 				console.error("createAnswer error", err);
-                            }
+			    }
 			});
-                    }
+		    }
 		},
 		onremotetrack: (track, mid, on) => {
 		    if (!track) return;
 		    
 		    const rfid = remoteFeed.rfid;
-		    // Track added
+		    if(!tracks[rfid]) tracks[rfid] = {};
+		    // New audio or video track
 		    if (on) {
 			let stream = new MediaStream([track]);
-			remoteFeed.remoteTracks[mid] = stream;
-			if(track.kind === "audio")
+			if(track.kind === "audio" && !tracks[rfid].audio) {
+			    console.log("Audio stream "+rfid+" arrived");
+			    tracks[rfid].audio = stream;
 			    uiAddAudio(rfid, stream);
-			else if(track.kind === "video")
-			    uiAddVideo(rfid, stream);
-		    }
-		    // Track removed
-		    else {
-			delete remoteFeed.remoteTracks[mid];
-			uiRemove(rfid);
+			} else if(track.kind === "video" && !tracks[rfid].video) {
+			    console.log("Video stream "+rfid+" arrived");
+			    tracks[rfid].video = stream;
+			    uiAddVideo(rfid, stream, true);
+			}
 		    }
 		}
             });
@@ -178,83 +188,95 @@ const VideoRoom = function() {
     }
 
     // TODO: Move all uiXXX functions somewhere else
-    function uiAddVideo(id, stream) {
-	if(document.getElementById('vid_'+id)) return;
-	console.log("Adding video for "+id+"...");
+    function uiAddVideo(rfid, stream, addCtrl) {
+	if(document.getElementById('vid_'+rfid)) return;
 	
 	let video = document.createElement("video");
-	video.id = "vid_"+id;
+	video.id = "vid_"+rfid;
 	video.autoplay = true;
 	video.playsInline = true;
 	video.srcObject = stream;
 	video.muted = true;
 	
-	const cell = uiVideoCell(id);
+	const cell = uiVideoCell(rfid);
 	const wrap = uiVideoWrap();
 	wrap.appendChild(video);
 	cell.appendChild(wrap);
 
 	VideoCover.apply(wrap,video);
 	Layout.add(cell);
-	uiAddVideoCtrl(id);
+	if(addCtrl) {
+	    uiAddVideoCtrl(rfid);
+	}
     }
 
-    function uiAddAudio(id, stream) {
-	if(document.getElementById('aud_'+id)) return;	
-	console.log("Adding audio for "+id+"...");
+    function uiAddAudio(rfid, stream) {
+	if(document.getElementById('aud_'+rfid)) return;
 	
 	let audio = document.createElement("audio");
-	audio.id = "aud_"+id;
+	audio.id = "aud_"+rfid;
 	audio.style = "display:none;";
 	audio.autoplay = true;
 	audio.playsInline = true;
 	audio.srcObject = stream;
 
-	const cell = uiVideoCell(id);
+	const cell = uiVideoCell(rfid);
 	cell.appendChild(audio);
 	Layout.add(cell);
     }
 
-    function uiVideoWrap(id) {
+    function uiVideoCell(rfid) {
+	let div = document.getElementById('cont_'+rfid);
+	if(div)
+	    return div;
+	div = document.createElement("div");
+	div.className = "video-cell";
+	div.id = "cont_"+rfid;
+	return div;
+    }
+
+    function uiVideoWrap() {
 	wrap = document.createElement("div");
 	wrap.className = "video-wrapper";
 	return wrap;
     }
     
-    function uiVideoCell(id) {
-	let div = document.getElementById('cont_'+id);
-	if(div)
-	    return div;
-	div = document.createElement("div");
-	div.className = "video-cell";
-	div.id = "cont_"+id;
-	return div;
+    function uiRemove(rfid, delCtrl) {
+	if(delCtrl) {
+	    uiDelVideoCtrl(rfid);
+	}
+	Layout.remove($('#cont_'+rfid).get(0));
     }
 
-    function uiRemove(id) {
-	console.log("Removing "+id+"...");
-	uiDelVideoCtrl(id);
-	Layout.remove($('#cont_'+id).get(0));
-    }
-
-    function uiAddVideoCtrl(id) {
+    function uiAddVideoCtrl(rfid) {
 	$("#control-box")
-	    .append('<button class="control-button" id="videoCtrl_'+id+'" title="Hide Video">'+
-		    '<i class="fas fa-video-slash"></i></button>');
-	$("#videoCtrl_"+id).click(el => {
-	    if(el.target.className === "fas fa-video-slash") {
-		el.target.className = "fas fa-video";
-		$('#cont_'+id).hide(); // TODO: Unsubscribe from local/remote stream
-	    } else if(el.target.className === "fas fa-video") {
-		el.target.className = "fas fa-video-slash";
-		$('#cont_'+id).show(); // TODO: Subscribe to local/remote stream
+	    .append('<button class="control-button" id="videoCtrl_'+rfid+'" title="Hide Video">'+
+		    '<i id="videoCtrlAlt_'+rfid+'" class="fas fa-video-slash"></i></button>');
+	$("#videoCtrl_"+rfid).click(() => {
+	    const el = $('#videoCtrlAlt_'+rfid);
+	    if(el.hasClass('fa-video-slash')) {
+		el.addClass('fa-video').removeClass('fa-video-slash');
+		uiRemove(rfid, false);
+	    } else if(el.hasClass('fa-video')) {
+		el.addClass('fa-video-slash').removeClass('fa-video');
+		if(plugin && plugin.localStream) {
+		    uiAddVideo(0, plugin.localStream, false);
+		}
+		else if(tracks && tracks[rfid]) {
+		    if(tracks[rfid].video) {
+			uiAddVideo(rfid, tracks[rfid].video, false);
+		    }
+		    if(tracks[rfid].audio) {
+			uiAddAudio(rfid, tracks[rfid].audio);
+		    }
+		}
 	    }
 	});
 	$("#control-box").show();
     }
     
-    function uiDelVideoCtrl(id) {
-	$("#videoCtrl_"+id).remove();
+    function uiDelVideoCtrl(rfid) {
+	$("#videoCtrl_"+rfid).remove();
 	if($("#control-box").children().length == 0) {
 	    $("#control-box").hide();
 	}

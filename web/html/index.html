@@ -46,6 +46,9 @@
 	      janusUrl: wsp + "//" + hostname + "/janus-wss",
 	      gridId: 'video-grid'
 	  });
+	  // Full screen
+	  const el = document.documentElement;
+	  el.requestFullscreen();
 	  // Prevent sleep
 	  wakeLock = await navigator.wakeLock.request('screen');
       };
