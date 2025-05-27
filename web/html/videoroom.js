@@ -65,7 +65,7 @@ const VideoRoom = (function() {
 		    console.log("Stream "+feedId+" ended, removing");
 		    delete tracks[feedId];
 		    UI.remove(feedId);
-		    UI.removeVideoCtrl();
+		    UI.removeVideoCtrl(feedId);
 		}
 		// Handle jsep
 		if (jsep) {
