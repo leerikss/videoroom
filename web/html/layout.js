@@ -1,4 +1,4 @@
-const Layout = function() {
+const Layout = (function() {
     
     let grid;
 
@@ -22,9 +22,7 @@ const Layout = function() {
     };
 
     function init(gridId) {
-
 	grid = document.getElementById(gridId);
-
 	window.addEventListener('DOMContentLoaded', update);
 	window.addEventListener('resize', update);
     }
@@ -61,4 +59,4 @@ const Layout = function() {
 	add: add,
 	remove: remove
     }
-}();
+})();

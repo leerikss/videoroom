@@ -3,16 +3,22 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Video Room</title>
+    
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/8.2.3/adapter.min.js" ></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
     <script type="text/javascript" src="janus.js" ></script>
+    
     <script type="text/javascript" src="video_cover.js"></script>	
     <script type="text/javascript" src="layout.js"></script>	
+    <script type="text/javascript" src="ui.js"></script>	
     <script type="text/javascript" src="videoroom.js"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" href="video_grid.css" type="text/css"/>
     <link rel="stylesheet" href="select_role.css" type="text/css"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="control_box.css" type="text/css"/>		
+    <link rel="stylesheet" href="control_box.css" type="text/css"/>
+    
   </head>
 
   <body>
@@ -38,13 +44,13 @@
     <script>
       async function start(publisher) {
 	  showVideos()
+	  // Init Janus
 	  const protocol = window.location.protocol;
           const hostname = window.location.hostname;
           const wsp = (protocol === "https:") ? "wss:" : "ws:";
 	  VideoRoom.init({
 	      publisher: publisher,
-	      janusUrl: wsp + "//" + hostname + "/janus-wss",
-	      gridId: 'video-grid'
+	      janusUrl: wsp + "//" + hostname + "/janus-wss"
 	  });
 	  // Full screen
 	  const el = document.documentElement;
@@ -54,28 +60,31 @@
       };
       
       function showVideos() {
-	  $("#back-button").show();	
 	  $("#select-role").hide();
 	  $("#video-grid").show();
+	  $("#back-button").show();	
       }
       
       function showSelection() {
+	  $("#control-box").empty();
 	  $("#control-box").hide();
+	  $("#video-grid").empty();
+	  $("#video-grid").hide();
 	  $("#back-button").hide();	
 	  $("#select-role").show();
-	  $("#video-grid").hide();
       }
 
       $( document ).ready(() => {
+	  // Init layout
+	  Layout.init("video-grid");
+	  // Back button
 	  $("#back-button").click(() => {
 	      VideoRoom.stop();
-	      $("#video-grid").empty();
-	      $("#control-box").empty();
-	      $("#control-box").hide();
-	      $("#back-button").hide();	
 	      showSelection();
 	  });
       });
+      
+      // Default view
       $("#control-box").hide();
       $("#back-button").hide();	
       

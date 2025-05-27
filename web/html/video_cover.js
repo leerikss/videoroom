@@ -1,4 +1,4 @@
-const VideoCover = function() {
+const VideoCover = (function() {
 
     let scale = 1;
     let lastScale = 1;
@@ -88,4 +88,4 @@ const VideoCover = function() {
     return {
 	apply: apply
     }
-}();
+})();
