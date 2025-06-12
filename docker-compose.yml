@@ -11,6 +11,7 @@ services:
       - ./janus/conf/janus.jcfg:/opt/janus/etc/janus/janus.jcfg
       - ./janus/conf/janus.transport.websockets.jcfg:/opt/janus/etc/janus/janus.transport.websockets.jcfg
       - ./janus/conf/janus.plugin.videoroom.jcfg:/opt/janus/etc/janus/janus.plugin.videoroom.jcfg
+      - ./janus/conf/janus.plugin.streaming.jcfg:/opt/janus/etc/janus/janus.plugin.streaming.jcfg      
       
   web:
     build: ./web

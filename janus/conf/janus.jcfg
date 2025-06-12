@@ -3,6 +3,8 @@ general: {
   log_level = 4
   log_timestamps = true
   log_to_stdout = true
+#  debug_level = 7
+#  debug_timestamps = true  
 }
 
 http: {

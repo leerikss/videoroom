@@ -12,6 +12,7 @@
     <script type="text/javascript" src="layout.js"></script>	
     <script type="text/javascript" src="ui.js"></script>	
     <script type="text/javascript" src="videoroom.js"></script>
+    <script type="text/javascript" src="streaming.js"></script>    
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     
@@ -52,6 +53,9 @@
 	            publisher: publisher,
 	            janusUrl: wsp + "//" + hostname + "/janus-wss"
 	        });
+          Streaming.init({
+	            janusUrl: wsp + "//" + hostname + "/janus-wss"
+          });
 	        // Full screen
 	        const el = document.documentElement;
 	        el.requestFullscreen();
@@ -80,6 +84,7 @@
 	        // Back button
 	        $("#back-button").click(() => {
 	            VideoRoom.stop();
+              Streaming.stop();
 	            showSelection();
 	        });
       });

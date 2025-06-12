@@ -1,5 +1,4 @@
 const UI = (function() {
-
     function addVideo(rfid, stream) {
 	      if(document.getElementById('vid_'+rfid)) return;
 	      

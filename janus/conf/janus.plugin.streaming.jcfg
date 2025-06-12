@@ -1,0 +1,44 @@
+rpi1: {
+  id = 1
+  description = "RPI #1 Stream"
+  type = "rtp"
+  video = true
+  videoport = 10001
+  videopt = 96
+  videortpmap = "H264/90000"
+  videofmtp = "profile-level-id=42e01f;packetization-mode=1"
+  audio = false
+}
+rpi2: {
+  id = 2
+  description = "RPI #2 Stream"
+  type = "rtp"
+  video = true
+  videoport = 10002
+  videopt = 96
+  videortpmap = "H264/90000"
+  videofmtp = "profile-level-id=42e01f;packetization-mode=1"
+  audio = false
+}
+rpi3: {
+  id = 3
+  description = "RPI #3 Stream"
+  type = "rtp"
+  video = true
+  videoport = 10003
+  videopt = 96
+  videortpmap = "H264/90000"
+  videofmtp = "profile-level-id=42e01f;packetization-mode=1"
+  audio = false
+}
+rpi4: {
+  id = 4
+  description = "RPI #4 Stream"
+  type = "rtp"
+  video = true
+  videoport = 10004
+  videopt = 96
+  videortpmap = "H264/90000"
+  videofmtp = "profile-level-id=42e01f;packetization-mode=1"
+  audio = false
+}
