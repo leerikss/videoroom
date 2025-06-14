@@ -48,12 +48,13 @@ ip_from_url() {
 }
 
 stream() {
+    # Optimized for RPI Camera Module V2
     gst-launch-1.0 -v libcamerasrc ! \
-  	       video/x-raw,width=1920,height=1080,framerate=15/1 ! \
-	       queue ! \
-	       x264enc tune=zerolatency speed-preset=ultrafast key-int-max=30 bitrate=10000 byte-stream=true ! \
-	       rtph264pay pt=96 config-interval=1 ! \
-	       queue ! udpsink host=$1 port=$PORT sync=false async=false
+                   video/x-raw,width=1632,height=1232,framerate=15/1 ! \
+                   videoconvert ! \
+                   x264enc tune=zerolatency speed-preset=ultrafast bitrate=1500 ! \
+                   rtph264pay pt=96 config-interval=1 ! \
+                   udpsink host=$1 port=$PORT sync=false async=false
 }
 
 main() {
